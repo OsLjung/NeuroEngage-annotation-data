@@ -1,0 +1,26 @@
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(lme4)
+library(lmerTest) 
+```
+```{r}
+# Load data
+test_data <- read.csv("~/Documents/annotation-data/backchannels-average-engagment.csv", sep=";")
+test_data <- test_data %>%
+  group_by(subject)
+```
+```{r}
+# Convert columns to factors as needed
+test_data$condition <- as.factor(test_data$condition)
+test_data$subject <- as.factor(test_data$subject)
+
+```
+```{r}
+test_data$condition <- relevel(test_data$condition, ref = "medium") #Change condition to serve as reference to get each pairwise comparison
+```
+```{r}
+# Fit the mixed-effects model with the subject_id as a random effect
+test_model <- lmer(avg_engagement ~ condition + (1 | subject), data = test_data)
+summary(test_model)
+```
