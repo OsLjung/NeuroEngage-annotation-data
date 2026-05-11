@@ -2,6 +2,7 @@ import re
 from collections import defaultdict
 import pprint as pp
 import json
+import os
 
 def rec_dd():
     return defaultdict(rec_dd)
@@ -90,6 +91,9 @@ def conditions(file):
 
 def writeToFile(folder):
     for name in DATA:
+        if os.path.isdir(folder) == False:
+            os.mkdir (folder)
+        
         print(f'creating for {name}...')
         condition = ''
         try:

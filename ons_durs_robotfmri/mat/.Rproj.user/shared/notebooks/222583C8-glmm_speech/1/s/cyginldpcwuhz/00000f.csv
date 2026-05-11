@@ -1,0 +1,5 @@
+"0","# set id, condition and eng_level as factors"
+"0","long_data <- long_data %>%"
+"0","  mutate(id = factor(id),"
+"0","         condition = factor(condition, levels = c(""human"", ""robot"")),"
+"0","         eng_level = factor(eng_level, levels = c(""low"", ""medium"", ""high"")))"

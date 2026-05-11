@@ -1,0 +1,6 @@
+"0","# Load required packages"
+"0","library(dplyr)"
+"0","library(ggplot2)"
+"0",""
+"0","# Read in the data"
+"0","opinions <- read.csv(""/Users/katya/Downloads/logfiles/opinion_ratings.csv"", sep = ',')"

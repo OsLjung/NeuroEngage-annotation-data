@@ -1,0 +1,8 @@
+"0","library(ggplot2)"
+"0",""
+"0","# Create a boxplot"
+"0","ggplot(combined_data, aes(x = interaction(group, type), y = value, fill = type)) +"
+"0","  geom_boxplot(outlier.shape = NA) +"
+"0","  labs(x = ""Group"", y = ""Value"") +"
+"0","  theme_minimal()"
+"0",""

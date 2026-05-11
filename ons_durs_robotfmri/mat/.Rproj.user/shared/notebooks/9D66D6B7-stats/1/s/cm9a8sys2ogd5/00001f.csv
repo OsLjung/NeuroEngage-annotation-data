@@ -1,0 +1,3 @@
+"0",""
+"0","# Step 3: Save to a new CSV (optional)"
+"0","write.csv(data, ""reorganized_data.csv"", row.names = FALSE)"

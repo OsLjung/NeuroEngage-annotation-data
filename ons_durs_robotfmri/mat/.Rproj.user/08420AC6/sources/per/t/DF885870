@@ -1,0 +1,28 @@
+{
+    "id": "DF885870",
+    "path": "~/Downloads/woz_time_sorted/events/stats.Rmd",
+    "project_path": null,
+    "type": "r_markdown",
+    "hash": "2430422568",
+    "contents": "",
+    "dirty": false,
+    "created": 1730198451070.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "tempName": "Untitled1",
+        "chunk_output_type": "inline",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "167,29",
+        "scrollLine": "156"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1730475847,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1730475847812,
+    "read_only": false,
+    "read_only_alternatives": []
+}

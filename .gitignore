@@ -7,12 +7,13 @@ engagement-opinion-change-boxplots.png
 engagment-backchannel-per-production.png
 backchannels-average-engagment-human.csv
 env/*
-human-human/*
-human-robot/*
-logfiles/*
-ons_durs_ex_eng/*   
-ons_durs_ex_eng_v*/*
-ons_durs_robotfmri/*
+ons_durs_ex_eng
+ons_durs_ex_eng_v1
+ons_durs_ex_eng_v2
+ons_durs_ex_eng_v3
+ons_durs_ex_eng_v4
+ons_durs_ex_eng_v5
+ons_durs_ex_eng_v6
 info.txt
 notes.txt
 production-backchannels-paired-normalised-human.csv
@@ -25,6 +26,7 @@ hh-plot.png
 hh-confidence.png
 onset-durations-script
 acess_token.txt
+testdir
 
 
 # Byte-compiled / optimized / DLL files
@@ -253,3 +255,4 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+

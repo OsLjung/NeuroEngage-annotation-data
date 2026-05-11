@@ -30,7 +30,7 @@ def writeMat(out, jsonDir='human-human', matFiles='ons_durs_robotfmri/mat'):
         #"names" are the names of the type of events to be studied. 
         #names =numpy.array(["production", "comprehension","turn_initiation","silence","fixation_cross",'low_eng', 'medium_eng', 'high_eng'], dtype=object)
         #names =numpy.array(["comprehension","turn_initiation","silence","fixation_cross",'low_eng', 'medium_eng', 'high_eng'], dtype=object)
-        names =numpy.array(['prod_anat_medium', 'prod_anat_high', "comprehension","turn_initiation","silence","fixation_cross"], dtype=object)
+        names =numpy.array(['prod_anat_low', 'prod_anat_medium', "comprehension","turn_initiation","silence","fixation_cross"], dtype=object)
         
         ######################################
         #TODO: make a numpy object array called "names" that contains the events you need to study in the desiered order
@@ -174,18 +174,18 @@ def writeMat(out, jsonDir='human-human', matFiles='ons_durs_robotfmri/mat'):
             #   and onsets of turn_initiation must be added THIRD.
             #   vis-a-vis for the order of duration times. 
 
-            #matDict['onsets'].append(onsets_low)
+            matDict['onsets'].append(onsets_low)
             matDict['onsets'].append(onsets_medium)
-            matDict['onsets'].append(onsets_high)
+            #matDict['onsets'].append(onsets_high)
             #matDict['onsets'].append(onsets_prod)
             matDict['onsets'].append(onsets_comp)
             matDict['onsets'].append(numpy.float32([i-0.6 for i in onsets_prod])) #Turn initiation, defined as 0.6 seconds before onset of production
             matDict['onsets'].append(numpy.float32([])) #placeholder for silence onsets, added later
             matDict['onsets'].append(numpy.float32([])) #placeholder for fixation cross onsets, added later
             
-            #matDict['durations'].append(durations_low)
+            matDict['durations'].append(durations_low)
             matDict['durations'].append(durations_medium)
-            matDict['durations'].append(durations_high)
+            #matDict['durations'].append(durations_high)
             #matDict['durations'].append(durations_prod)
             matDict['durations'].append(durations_comp)
             matDict['durations'].append([0.6]*len(onsets_prod)) #Turn initiations is always 0.6 long. adds a number of 0.6 equal to the number of production events
@@ -245,6 +245,6 @@ def writeMat(out, jsonDir='human-human', matFiles='ons_durs_robotfmri/mat'):
         scipy.io.savemat(outputDir+'/'+filename+'.mat', DATA[filename], appendmat=True, do_compression = True,)
 
 if __name__ =='__main__':
-     writeMat('testdir') 
+     writeMat('ons_durs_ex_eng_v9_low-medium') 
 
 

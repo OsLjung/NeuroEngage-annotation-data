@@ -1,0 +1,2 @@
+"0","prod_data_combined$group <- as.factor(prod_data_combined$group)"
+"0","prod_data_combined$type <- as.factor(prod_data_combined$type)"

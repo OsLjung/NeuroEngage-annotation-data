@@ -1,0 +1,187 @@
+```{r}
+# Load necessary libraries
+library(tidyverse)
+
+# Step 1: Load the CSV file
+data <- read.csv("total_speech_durations.csv")  # Replace with the actual path to your file
+
+# Step 2: Remove ".csv" from the `filename` column, then split it into initial columns
+data <- data %>%
+  mutate(filename = gsub("\\.csv$", "", filename)) %>%  # Remove ".csv" extension
+  separate(filename, into = c("speaker", "wizard_interaction", "condition"), sep = "_") %>%  # Split by underscores
+  mutate(
+    wizard_id = sub("([A-Z][0-9]+).*", "\\1", wizard_interaction), # Extract only W1 from W1P1
+    interaction_id = sub(".*([A-Z][0-9]+)", "\\1", wizard_interaction) # Extract only P1 from W1P1
+  ) %>%
+  select(speaker, wizard_id, interaction_id, condition, total_speech_duration)  # Reorder columns
+
+new_row_p = c(speaker = 'participant', wizard_id='W1', interaction_id='P3',condition='VR',speech_duration=NaN)
+data = rbind(data,new_row_p)
+new_row_r = c(speaker = 'robot', wizard_id='W1', interaction_id='P3',condition='VR',speech_duration=NaN)
+data = rbind(data,new_row_r)
+data <- data[order(data$speaker, data$wizard_id, data$interaction_id, data$condition),]
+row.names(data) <- NULL
+
+# Display the transformed data
+print(data)
+
+# Step 3: Save to a new CSV (optional)
+write.csv(data, "reorganized_data.csv", row.names = FALSE)
+```
+
+
+```{r}
+# Load necessary libraries
+library(dplyr)
+library(lme4)
+library(lmerTest) 
+
+# Load data
+data <- read.csv("reorganized_data.csv")
+data <- data %>%
+  group_by(wizard_id, interaction_id) %>%
+  mutate(user_id = cur_group_id()) %>%  # Assign unique ID per combination
+  ungroup()
+
+# Display the modified data
+print(data)
+
+# Convert columns to factors as needed
+data$condition <- as.factor(data$condition)
+data$speaker <- as.factor(data$speaker)
+data$user_id <- as.factor(data$user_id)
+```
+```{r}
+# Re-run the mixed-effects model with the corrected user IDs
+model <- lmer(total_speech_duration ~ condition * speaker + (1 | wizard_id) + (1 | user_id), data = data)
+summary(model)
+```
+
+```{r}
+gaps_c2p_data <- read.csv('gaps_c2p.csv')
+gaps_c2p_data <- gaps_c2p_data %>%
+  group_by(wizard_id, interaction_id) %>%
+  mutate(user_id = cur_group_id()) %>%  # Assign unique ID per combination
+  ungroup()
+
+model <- lmer(duration ~ condition + (1 | wizard_id) + (1 | user_id), data = gaps_c2p_data)
+summary(model)
+```
+```{r}
+gaps_p2c_data <- read.csv('gaps_p2c.csv')
+gaps_p2c_data <- gaps_p2c_data %>%
+  group_by(wizard_id, interaction_id) %>%
+  mutate(user_id = cur_group_id()) %>%  # Assign unique ID per combination
+  ungroup()
+
+model <- lmer(duration ~ condition + (1 | wizard_id) + (1 | user_id), data = gaps_p2c_data)
+summary(model)
+```
+
+```{r}
+overlap_p2c_prod_data <- read.csv('overlaps_p2c_productive.csv')
+
+overlap_p2c_prod_data <- overlap_p2c_prod_data %>%
+  group_by(wizard_id, interaction_id) %>%
+  mutate(user_id = cur_group_id()) %>%  # Assign unique ID per combination
+  ungroup()
+
+# Step 1: Create a count of overlaps per condition
+overlap_counts <- overlap_p2c_prod_data %>%
+  group_by(condition, wizard_id, user_id) %>%
+  summarise(count = n()) %>%
+  ungroup()
+
+# Step 2: Fit a GLMM to see if overlap counts differ by condition
+model <- glm(count ~ condition, 
+               data = overlap_counts, 
+               family = poisson(link = "log"))
+
+# View model summary
+summary(model)
+```
+```{r}
+model <- lm(duration ~ condition, data = overlap_p2c_prod_data)
+summary(model)
+```
+```{r}
+overlap_c2p_destr_data <- read.csv('overlaps_c2p_destructive.csv')
+
+overlap_c2p_destr_data <- overlap_c2p_destr_data %>%
+  group_by(wizard_id, interaction_id) %>%
+  mutate(user_id = cur_group_id()) %>%  # Assign unique ID per combination
+  ungroup()
+
+# Step 1: Create a count of overlaps per condition
+overlap_counts <- overlap_c2p_destr_data %>%
+  group_by(condition, wizard_id, user_id) %>%
+  summarise(count = n()) %>%
+  ungroup()
+
+model <- glm(count ~ condition, 
+               data = overlap_counts, 
+               family = poisson(link = "log"))
+
+summary(model)
+```
+```{r}
+model <- lm(duration ~ condition, data = overlap_c2p_destr_data)
+summary(model)
+```
+```{r}
+overlap_p2c_destr_data <- read.csv('overlaps_p2c_destructive.csv')
+
+overlap_p2c_destr_data <- overlap_p2c_destr_data %>%
+  group_by(wizard_id, interaction_id) %>%
+  mutate(user_id = cur_group_id()) %>%  # Assign unique ID per combination
+  ungroup()
+
+# Step 1: Create a count of overlaps per condition
+overlap_counts <- overlap_p2c_destr_data %>%
+  group_by(condition) %>%
+  summarise(count = n()) %>%
+  ungroup()
+
+# Step 2: Fit a GLMM to see if overlap counts differ by condition
+model <- glm(count ~ condition,
+               data = overlap_counts, 
+               family = poisson(link = "log"))
+
+# View model summary
+summary(model)
+```
+```{r}
+model <- lmer(duration ~ condition + (1 | wizard_id) + (1 | user_id), data = overlap_p2c_destr_data)
+summary(model)
+```
+
+```{r}
+# Step 1: Extract relevant columns and tag them
+overlap_prod_data <- overlap_p2c_prod_data %>%
+  select(wizard_id, interaction_id, condition) %>% # Adjust column names as per your actual data
+  mutate(type = "overlap_prod") # Add a tag for overlaps
+
+overlap_destr_data <- overlap_p2c_destr_data %>%
+  select(wizard_id, interaction_id, condition) %>% # Adjust column names as per your actual data
+  mutate(type = "overlap_destr") # Add a tag for overlaps
+
+gap_data <- gaps_p2c_data %>%
+  select(wizard_id, interaction_id, condition) %>% # Adjust column names as per your actual data
+  mutate(type = "gap") # Add a tag for gaps
+
+# Step 2: Combine the two data frames
+all_transitions_p2c <- bind_rows(overlap_prod_data, overlap_destr_data, gap_data)
+```
+
+```{r}
+proportion_overlap_prod <- all_transitions_p2c %>%
+  group_by(wizard_id, interaction_id, condition, type) %>%
+  summarise(count = n(), .groups = 'drop') %>% # Count occurrences and drop grouping afterwards
+  pivot_wider(names_from = type, values_from = count, values_fill = 0) # Pivot to get overlaps and gaps in separate columns
+
+# Step 2: Calculate total transitions and the proportion of overlaps
+proportion_overlap_prod <- proportion_overlap_prod %>%
+  mutate(total = overlap_prod + overlap_destr + gap, # Calculate total transitions
+         proportion_overlap = overlap_prod / total)
+```
+

@@ -1,0 +1,3 @@
+"0","# Combine 'condition' and 'eng_cond' into a single variable for grouping"
+"0","opinions <- opinions %>%"
+"0","  mutate(cond_eng = paste(condition, eng_cond, sep = ""_""))"

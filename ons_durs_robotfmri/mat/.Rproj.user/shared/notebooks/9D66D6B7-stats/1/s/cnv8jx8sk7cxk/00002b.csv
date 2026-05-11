@@ -1,0 +1,5 @@
+"0",""
+"0","# Convert columns to factors as needed"
+"0","data$condition <- as.factor(data$condition)"
+"0","data$speaker <- as.factor(data$speaker)"
+"0","data$user_id <- as.factor(data$user_id)"
